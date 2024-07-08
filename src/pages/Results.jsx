@@ -38,7 +38,11 @@ const Results = () => {
       }
     };
 
-    fetchJobStatus();
+    const interval = setInterval(() => {
+      fetchJobStatus();
+    }, 5000); // Actualiser toutes les 5 secondes
+
+    return () => clearInterval(interval); // Nettoyer l'intervalle lors du démontage du composant
   }, []);
 
   const getStatusMessage = (status) => {
