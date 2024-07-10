@@ -6,6 +6,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordType, setPasswordType] = useState('password'); // Nouvel état pour le type de champ de mot de passe
   const [error, setError] = useState('');
 
   const handleForgotPassword = () => {
@@ -47,6 +48,10 @@ const Login = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setPasswordType(passwordType === 'password' ? 'text' : 'password');
+  };
+
   return (
     <div className='login-container'>
       <img alt="Deeptimize Logo" className='logo-deeptimize' src={deeptimizeLogo} />
@@ -65,14 +70,19 @@ const Login = () => {
         </div>
         <div className='form-group'>
           <label htmlFor='password'>Password:</label>
-          <input
-            type='password'
-            id='password'
-            name='password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className='password-input-container'>
+            <input
+              type={passwordType}
+              id='password'
+              name='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type='button' onClick={togglePasswordVisibility} className='toggle-password-button'>
+              {passwordType === 'password' ? 'Show' : 'Hide'}
+            </button>
+          </div>
         </div>
         {error && <p className='error-message'>{error}</p>}
         <a onClick={handleForgotPassword} className='forgot-password'>Forgot Password?</a>

@@ -60,31 +60,44 @@ const Results = () => {
     }
   };
 
+  const renderCards = () => {
+    const cards = [];
+    for (let i = 0; i < 10; i++) {
+      cards.push(
+        <div key={i} className='card'>
+          <div className='div-image'>
+            <img alt="Results Card" className='card-image' src={card} />
+          </div>
+          {jobStatus && (
+            <div className='result-text'>
+              <p style={{ color: 'white' }}>Status: {getStatusMessage(jobStatus)}</p>
+              {jobStatus === 'SUCCEEDED' && fetchUrls.length > 1 && (
+                <div className='download-buttons'>
+                  <a href={fetchUrls[1]} target="_blank" rel="noopener noreferrer">
+                    <button className='download-button'>Download File</button>
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+    return cards;
+  };
+
   return (
     <div>
       <Navbar />
       <div>
         <h1 className='data-title'>My <span className='green-text'>data</span> record</h1>
-        <div className='div-image'>
-          <img alt="Results Card" className='card-image' src={card} />
+        <div className='cards-container'>
+          {renderCards()}
         </div>
-        {jobStatus && (
-          <div className='result-text'>
-            <p style={{ color: 'white' }}>Status: {getStatusMessage(jobStatus)}</p>
-            {jobStatus === 'SUCCEEDED' && fetchUrls.length > 0 && (
-              <div className='download-buttons'>
-                {fetchUrls.map((url, index) => (
-                  <a href={url} key={index} target="_blank" rel="noopener noreferrer">
-                    <button className='download-button'>Download File {index + 1}</button>
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
 };
 
 export default Results;
+
