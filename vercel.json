@@ -1,22 +1,8 @@
 {
-    "version": 2,
-    "routes": [
+    "rewrites": [
       {
-        "src": "/api/nonprod/auth/login",
-        "dest": "https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/auth/login",
-        "methods": ["POST"]
-      },
-      {
-        "src": "/api/analyze/async(.*)",
-        "dest": "https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/analyze/async/:1",
-        "methods": ["GET", "POST"]
-      },
-      {
-        "handle": "filesystem"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/index.html"
+        "source": "/api/:path*",
+        "destination": "https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/:path*"
       }
     ]
   }

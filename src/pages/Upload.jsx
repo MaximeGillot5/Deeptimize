@@ -34,10 +34,9 @@ const Upload = () => {
     const analysis = analysisOption;
     
     try {
-      const url = new URL('/api/analyze/', window.location.origin);
+      const url = new URL('https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/analyze/async/');
       url.searchParams.append('file-name', fileName);
       url.searchParams.append('analysis', analysis);
-      
     
       const response = await fetch(url.toString(), {
         method: 'GET',
