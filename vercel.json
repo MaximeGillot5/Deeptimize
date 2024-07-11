@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/:path*",
+        "destination": "https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/:path*"
+      }
+    ]
+  }
+  
