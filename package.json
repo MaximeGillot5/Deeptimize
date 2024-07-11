@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "aws-sdk": "^2.1654.0",
     "axios": "^1.7.2",
+    "proxy": "https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod",
     "http-proxy-middleware": "^3.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

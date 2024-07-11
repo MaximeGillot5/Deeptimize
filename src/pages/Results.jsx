@@ -89,7 +89,7 @@ const Results = () => {
   return (
     <div>
       <Navbar />
-      <div className='results-container'>
+      <div>
         <h1 className='data-title'>My <span className='green-text'>data</span> record</h1>
         <div className='cards-container'>
           {renderCards()}

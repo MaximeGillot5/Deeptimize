@@ -186,6 +186,10 @@ input:focus {
   position: relative;
 }
 
+.white-text {
+  color: white;
+}
+
 .progress-text {
   color: white;
   position: absolute;

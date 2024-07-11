@@ -10,8 +10,6 @@ const Upload = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadedBytes, setUploadedBytes] = useState(0);
 
-
-
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -26,56 +24,60 @@ const Upload = () => {
       alert('No auth token found');
       return;
     }
-
+    
     if (!selectedFile || !analysisOption) {
       alert('Please select a file and an analysis option');
       return;
     }
-
+    
     const fileName = selectedFile.name;
     const analysis = analysisOption;
-
+    
     try {
       const url = new URL('https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/analyze/async/');
       url.searchParams.append('file-name', fileName);
       url.searchParams.append('analysis', analysis);
-
+    
       const response = await fetch(url.toString(), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
       });
-
+    
       const data = await response.json();
-
+    
       if (response.ok) {
         console.log('Received job ID and upload URL:', data);
         localStorage.setItem('job_id', data.job_id);
         localStorage.setItem('upload_url', data.upload_url);
-
+    
         setIsUploading(true);
         await uploadVideo(data.upload_url);
-
+    
         setIsUploading(false);
-        setShowSuccessPopup(true);
       } else {
         alert(`Error: ${data.message}`);
+        return;
       }
     } catch (error) {
       console.error('Error starting analysis:', error);
       alert('Error starting analysis: ' + error.message);
+      setIsUploading(false);
+      return;
     }
   };
-
+  
   const uploadVideo = async (uploadUrl) => {
     if (!uploadUrl) {
       alert('Upload URL not found.');
+      setIsUploading(false);
       return;
     }
   
     if (!selectedFile) {
       alert('Please select a file to upload');
+      setIsUploading(false);
       return;
     }
   
@@ -88,32 +90,39 @@ const Upload = () => {
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
           const uploaded = event.loaded;
-          console.log(`Uploaded ${uploaded} bytes`);
-          setUploadedBytes(uploaded); // Assurez-vous que setUploadedBytes est correctement défini et mis à jour
+          const progress = Math.round((uploaded / selectedFile.size) * 100);
+          console.log(`Uploaded ${uploaded} bytes (${progress}% completed)`);
+          setUploadProgress(progress);
+          setUploadedBytes(uploaded);
+          setIsUploading(true)
         }
       };
   
       xhr.onload = () => {
         if (xhr.status === 200) {
           console.log('Video uploaded successfully!');
+          setShowSuccessPopup(true);
         } else {
           console.error('Error response from server:', xhr.statusText);
           alert(`Error uploading video: ${xhr.statusText}`);
         }
+        setIsUploading(false);
       };
   
       xhr.onerror = () => {
         console.error('Error uploading video:', xhr.statusText);
         alert(`Error uploading video: ${xhr.statusText}`);
+        setIsUploading(false);
       };
   
+      setIsUploading(true);
       xhr.send(selectedFile);
     } catch (error) {
       console.error('Error uploading video:', error);
       alert('Error uploading video: ' + error.message);
+      setIsUploading(false);
     }
   };
-  
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -140,7 +149,6 @@ const Upload = () => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
-  
 
   return (
     <div>
@@ -160,7 +168,7 @@ const Upload = () => {
           {selectedFile && <p>Selected file: {selectedFile.name}</p>}
         </div>
         <div className="options-container">
-        <h1><span className='yellow-text'>2. Select </span> my analysis option.</h1>
+          <h1><span className='yellow-text'>2. Select </span> my analysis option.</h1>
           <div className="option">
             {/* <label htmlFor="analysisOption">Analysis Option:</label> */}
             <select className='optionbar' id="analysisOption" name="analysisOption" value={analysisOption} onChange={handleAnalysisOptionChange}>
@@ -177,11 +185,8 @@ const Upload = () => {
           {isUploading ? 'Uploading...' : 'Analyze !'}
         </button>
         {isUploading && (
-  <p>Uploading... {formatBytes(uploadedBytes)} / {formatBytes(selectedFile.size)}</p>
-)}
-
-
-
+          <p className='white-text'>Uploading... {formatBytes(uploadedBytes)} / {formatBytes(selectedFile.size)}</p>
+        )}
       </div>
       {showSuccessPopup && (
         <div className="popup">
