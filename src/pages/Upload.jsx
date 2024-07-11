@@ -7,6 +7,10 @@ const Upload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadedBytes, setUploadedBytes] = useState(0);
+
+
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -69,38 +73,47 @@ const Upload = () => {
       alert('Upload URL not found.');
       return;
     }
-
+  
     if (!selectedFile) {
       alert('Please select a file to upload');
       return;
     }
-
+  
     try {
-      console.log('Uploading video to:', uploadUrl);
-
-      const response = await fetch(uploadUrl, {
-        method: 'PUT',
-        headers: {
-          "Content-Type": ""
-        },
-        body: selectedFile,
-      });
-
-      console.log('Upload response status:', response.status);
-
-      if (response.ok) {
-        console.log('Video uploaded successfully!');
-      } else {
-        console.error('Error response from server:', response);
-        const errorText = await response.text();
-        console.error('Error response text:', errorText);
-        alert(`Error uploading video: ${response.statusText}`);
-      }
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', uploadUrl, true);
+      xhr.setRequestHeader('Content-Type', '');
+      xhr.setRequestHeader('Content-Length', selectedFile.size.toString());
+  
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const uploaded = event.loaded;
+          console.log(`Uploaded ${uploaded} bytes`);
+          setUploadedBytes(uploaded); // Assurez-vous que setUploadedBytes est correctement défini et mis à jour
+        }
+      };
+  
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          console.log('Video uploaded successfully!');
+        } else {
+          console.error('Error response from server:', xhr.statusText);
+          alert(`Error uploading video: ${xhr.statusText}`);
+        }
+      };
+  
+      xhr.onerror = () => {
+        console.error('Error uploading video:', xhr.statusText);
+        alert(`Error uploading video: ${xhr.statusText}`);
+      };
+  
+      xhr.send(selectedFile);
     } catch (error) {
       console.error('Error uploading video:', error);
       alert('Error uploading video: ' + error.message);
     }
   };
+  
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -119,6 +132,15 @@ const Upload = () => {
       setSelectedFile(file);
     }
   };
+
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+  
 
   return (
     <div>
@@ -154,7 +176,12 @@ const Upload = () => {
         <button className="submit-button" onClick={submitOptionsAndUpload} disabled={isUploading}>
           {isUploading ? 'Uploading...' : 'Analyze !'}
         </button>
-        {isUploading && <div className="loader">Loading...</div>}
+        {isUploading && (
+  <p>Uploading... {formatBytes(uploadedBytes)} / {formatBytes(selectedFile.size)}</p>
+)}
+
+
+
       </div>
       {showSuccessPopup && (
         <div className="popup">

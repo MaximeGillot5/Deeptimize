@@ -40,7 +40,7 @@ const Results = () => {
 
     const interval = setInterval(() => {
       fetchJobStatus();
-    }, 5000); // Actualiser toutes les 5 secondes
+    }, 2000); // Actualiser toutes les 5 secondes
 
     return () => clearInterval(interval); // Nettoyer l'intervalle lors du démontage du composant
   }, []);
@@ -89,7 +89,7 @@ const Results = () => {
   return (
     <div>
       <Navbar />
-      <div>
+      <div className='results-container'>
         <h1 className='data-title'>My <span className='green-text'>data</span> record</h1>
         <div className='cards-container'>
           {renderCards()}
