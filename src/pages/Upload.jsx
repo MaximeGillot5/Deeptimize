@@ -34,9 +34,10 @@ const Upload = () => {
     const analysis = analysisOption;
     
     try {
-      const url = new URL('/api/nonprod/analyze/async/', window.location.origin);
+      const url = new URL('/api/analyze/', window.location.origin);
       url.searchParams.append('file-name', fileName);
       url.searchParams.append('analysis', analysis);
+      
     
       const response = await fetch(url.toString(), {
         method: 'GET',
@@ -44,21 +45,9 @@ const Upload = () => {
           'Authorization': `Bearer ${authToken}`
         }
       });
-  
-      // Log the raw response for debugging
-      const responseText = await response.text();
-      console.log('Raw response:', responseText);
-  
-      // Check if the response is JSON
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (error) {
-        console.error('Failed to parse JSON response:', error);
-        alert('Failed to parse server response. Check the console for more details.');
-        return;
-      }
-  
+    
+      const data = await response.json();
+    
       if (response.ok) {
         console.log('Received job ID and upload URL:', data);
         localStorage.setItem('job_id', data.job_id);
@@ -79,7 +68,6 @@ const Upload = () => {
       return;
     }
   };
-  
   
   const uploadVideo = async (uploadUrl) => {
     if (!uploadUrl) {
