@@ -21,52 +21,54 @@ const Upload = () => {
   const submitOptionsAndUpload = async () => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
-      alert('No auth token found');
-      return;
+        alert('No auth token found');
+        return;
     }
     
     if (!selectedFile || !analysisOption) {
-      alert('Please select a file and an analysis option');
-      return;
+        alert('Please select a file and an analysis option');
+        return;
     }
     
     const fileName = selectedFile.name;
     const analysis = analysisOption;
     
     try {
-      const url = new URL('https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/analyze/async/');
-      url.searchParams.append('file-name', fileName);
-      url.searchParams.append('analysis', analysis);
+        const url = new URL('/upload-api/async/', window.location.href); // Utilisation de /upload-api/async/ pour l'analyse asynchrone
+
+        url.searchParams.append('file-name', fileName);
+        url.searchParams.append('analysis', analysis);
     
-      const response = await fetch(url.toString(), {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${authToken}`
+        const response = await fetch(url.toString(), {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+    
+        const data = await response.json();
+    
+        if (response.ok) {
+            console.log('Received job ID and upload URL:', data);
+            localStorage.setItem('job_id', data.job_id);
+            localStorage.setItem('upload_url', data.upload_url);
+    
+            setIsUploading(true);
+            await uploadVideo(data.upload_url);
+    
+            setIsUploading(false);
+        } else {
+            alert(`Error: ${data.message}`);
+            return;
         }
-      });
-    
-      const data = await response.json();
-    
-      if (response.ok) {
-        console.log('Received job ID and upload URL:', data);
-        localStorage.setItem('job_id', data.job_id);
-        localStorage.setItem('upload_url', data.upload_url);
-    
-        setIsUploading(true);
-        await uploadVideo(data.upload_url);
-    
-        setIsUploading(false);
-      } else {
-        alert(`Error: ${data.message}`);
-        return;
-      }
     } catch (error) {
-      console.error('Error starting analysis:', error);
-      alert('Error starting analysis: ' + error.message);
-      setIsUploading(false);
-      return;
+        console.error('Error starting analysis:', error);
+        alert('Error starting analysis: ' + error.message);
+        setIsUploading(false);
+        return;
     }
-  };
+};
+
   
   const uploadVideo = async (uploadUrl) => {
     if (!uploadUrl) {
