@@ -34,7 +34,7 @@ const Upload = () => {
     const analysis = analysisOption;
     
     try {
-      const url = new URL('https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/analyze/async/');
+      const url = new URL('/api/nonprod/analyze/async/', window.location.origin);
       url.searchParams.append('file-name', fileName);
       url.searchParams.append('analysis', analysis);
     

@@ -23,7 +23,7 @@ const Login = () => {
     };
 
     try {
-      const response = await fetch('https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/auth/login', {
+      const response = await fetch('/api/nonprod/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -15,7 +15,7 @@ const Results = () => {
       }
 
       try {
-        const response = await fetch(`https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/analyze/async/${jobId}`, {
+        const response = await fetch(`/api/nonprod/analyze/async/${jobId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
