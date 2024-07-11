@@ -44,9 +44,21 @@ const Upload = () => {
           'Authorization': `Bearer ${authToken}`
         }
       });
-    
-      const data = await response.json();
-    
+  
+      // Log the raw response for debugging
+      const responseText = await response.text();
+      console.log('Raw response:', responseText);
+  
+      // Check if the response is JSON
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (error) {
+        console.error('Failed to parse JSON response:', error);
+        alert('Failed to parse server response. Check the console for more details.');
+        return;
+      }
+  
       if (response.ok) {
         console.log('Received job ID and upload URL:', data);
         localStorage.setItem('job_id', data.job_id);
@@ -67,6 +79,7 @@ const Upload = () => {
       return;
     }
   };
+  
   
   const uploadVideo = async (uploadUrl) => {
     if (!uploadUrl) {
