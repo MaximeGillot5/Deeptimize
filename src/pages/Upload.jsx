@@ -87,7 +87,7 @@ const Upload = () => {
       const xhr = new XMLHttpRequest();
       xhr.open('PUT', uploadUrl, true);
       xhr.setRequestHeader('Content-Type', '');
-      xhr.setRequestHeader('Content-Length', selectedFile.size.toString());
+      // xhr.setRequestHeader('Content-Length', selectedFile.size.toString());
   
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
