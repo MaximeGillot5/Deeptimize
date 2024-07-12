@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.2ff81756.css",
+    "main.js": "/static/js/main.51b81f73.js",
+    "static/media/deeptimize-logo.svg": "/static/media/deeptimize-logo.48c488c0b52c7e54e2ae5f1aa3cd2a69.svg",
+    "static/media/card.svg": "/static/media/card.0e0c54a444b5ebb1d8381be59d990196.svg",
+    "index.html": "/index.html",
+    "main.2ff81756.css.map": "/static/css/main.2ff81756.css.map",
+    "main.51b81f73.js.map": "/static/js/main.51b81f73.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2ff81756.css",
+    "static/js/main.51b81f73.js"
+  ]
+}
