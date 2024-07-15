@@ -1,16 +1,12 @@
 {
     "rewrites": [
       {
-        "source": "/upload-api/:path*", 
-        "destination": "https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/analyze/:path*"
-      },
-      {
-        "source": "/api/:path*", 
+        "source": "/api/:path*",
         "destination": "https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/:path*"
       },
       {
-        "source": "/(.*)", 
-        "destination": "/index.html"
+        "source": "/upload-api/:path*",
+        "destination": "https://chc27y6zqk.execute-api.eu-west-1.amazonaws.com/nonprod/analyze/:path*"
       }
     ]
   }

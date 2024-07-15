@@ -14,7 +14,6 @@ const App = () => {
           <Route path="/help" element={<Help />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/results" element={<Results />} />
-
         </Routes>
       </Router>
     </main>

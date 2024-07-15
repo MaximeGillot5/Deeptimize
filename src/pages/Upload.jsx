@@ -18,70 +18,56 @@ const Upload = () => {
     setAnalysisOption(event.target.value);
   };
 
-  const submitOptionsAndUpload = async () => {
+const submitOptionsAndUpload = async () => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
-      alert('No auth token found');
-      return;
+        alert('No auth token found');
+        return;
     }
-  
+    
     if (!selectedFile || !analysisOption) {
-      alert('Please select a file and an analysis option');
-      return;
+        alert('Please select a file and an analysis option');
+        return;
     }
-  
+    
     const fileName = selectedFile.name;
     const analysis = analysisOption;
-  
+    
     try {
-      // Debugging logs
-      console.log('Starting analysis with file:', fileName, 'and option:', analysis);
-  
-      const url = new URL('/upload-api/async/', window.location.href);
-      url.searchParams.append('file-name', fileName);
-      url.searchParams.append('analysis', analysis);
-  
-      const response = await fetch(url.toString(), {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${authToken}`
+        const url = new URL('/upload-api/async/', window.location.href); // Utilisation de /upload-api/async/ pour l'analyse asynchrone
+
+        url.searchParams.append('file-name', fileName);
+        url.searchParams.append('analysis', analysis);
+    
+        const response = await fetch(url.toString(), {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+    
+        const data = await response.json();
+    
+        if (response.ok) {
+            console.log('Received job ID and upload URL:', data);
+            localStorage.setItem('job_id', data.job_id);
+            localStorage.setItem('upload_url', data.upload_url);
+    
+            setIsUploading(true);
+            await uploadVideo(data.upload_url);
+    
+            setIsUploading(false);
+        } else {
+            alert(`Error: ${data.message}`);
+            return;
         }
-      });
-  
-      // Debugging logs
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
-  
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
-      }
-  
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const errorText = await response.text();
-        console.error('Unexpected content type:', contentType);
-        throw new Error(`Expected JSON, got: ${contentType}, Response: ${errorText}`);
-      }
-  
-      const data = await response.json();
-      console.log('Received job ID and upload URL:', data);
-  
-      localStorage.setItem('job_id', data.job_id);
-      localStorage.setItem('upload_url', data.upload_url);
-  
-      setIsUploading(true);
-      await uploadVideo(data.upload_url);
-  
-      setIsUploading(false);
     } catch (error) {
-      console.error('Error starting analysis:', error);
-      alert('Error starting analysis: ' + error.message);
-      setIsUploading(false);
+        console.error('Error starting analysis:', error);
+        alert('Error starting analysis: ' + error.message);
+        setIsUploading(false);
+        return;
     }
-  };
-  
+};
 
   
   const uploadVideo = async (uploadUrl) => {
