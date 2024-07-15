@@ -31,6 +31,7 @@ const submitOptionsAndUpload = async () => {
     }
     
     const fileName = selectedFile.name;
+    localStorage.setItem('video_name', fileName);
     const analysis = analysisOption;
     
     try {

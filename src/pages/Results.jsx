@@ -5,10 +5,16 @@ import card from "../assets/images/card.svg";
 const Results = () => {
   const [jobStatus, setJobStatus] = useState(null);
   const [fetchUrls, setFetchUrls] = useState([]);
+  const [videoName, setVideoName] = useState('');
 
   useEffect(() => {
     const fetchJobStatus = async () => {
       const jobId = localStorage.getItem('job_id');
+      const storedVideoName = localStorage.getItem('video_name');
+
+      if (storedVideoName) {
+        setVideoName(storedVideoName);
+      }
       if (!jobId) {
         console.error('No job ID found in local storage.');
         return;
@@ -55,6 +61,8 @@ const Results = () => {
         return 'Analysis In Progress';
       case 'SUCCEEDED':
         return 'Analysis Finished';
+        case 'FAILED':
+          return 'Anlysis Failed, please retry';
       default:
         return 'Unknown Status';
     }
@@ -71,6 +79,7 @@ const Results = () => {
           {jobStatus && (
             <div className='result-text'>
               <p style={{ color: 'white' }}>Status: {getStatusMessage(jobStatus)}</p>
+              <p style={{ color: 'white', marginTop: -5 }}>Video Name: {videoName}</p>
               {jobStatus === 'SUCCEEDED' && fetchUrls.length > 1 && (
                 <div className='download-buttons'>
                   <a href={fetchUrls[1]} target="_blank" rel="noopener noreferrer">
